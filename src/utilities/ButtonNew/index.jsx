@@ -1,11 +1,12 @@
+
 import { Link } from 'react-router-dom';
 
-export const ButtonNewClients = () => {
+export const ButtonNew = ({label='Nuevo', link='/'}) => {
   return (
-	<Link to="/clientes/nuevo">
+	<Link to={link}>
 		<button className="btn btn-primary">
 			<i className="bi bi-plus-lg"></i>
-			Nuevo Cliente
+			{label}
 		</button>
 	</Link>
   )

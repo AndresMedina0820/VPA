@@ -3,11 +3,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GlobalStyles } from '../styles/GlobalStyles';
 
 // Components
-import { Layout } from '../layouts/Layout';
+import { Layout } from '../layouts';
 import { Customers } from '../modules/Customers/pages/List';
 import { FormCustomers } from '../modules/Customers/pages/FormCustomers';
-import { Users } from '../pages/Users/components/List';
-import { FormUsers } from '../pages/Users/components/FormUsers';
+import { Users } from '../modules/Users/pages/List';
+import { FormUsers } from '../modules/Users/pages/FormUsers';
 import { Buses } from '../pages/Buses/components/List';
 import { FormBuses } from '../pages/Buses/components/FormBuses';
 import { Travels } from '../pages/Travels/components/Travels';

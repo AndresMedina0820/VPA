@@ -1,7 +1,7 @@
 import { ContainetCustom } from "./LayoutStyles";
-import { Sidebar } from '../utilities/components/Sidebar';
+import { Sidebar } from '../utilities/Sidebar';
 import React, { useState } from "react";
-import { Navbar } from '../utilities/components/Navbar';
+import { Navbar } from '../utilities/Navbar';
 
 const modules = [
 		{ name: 'Clientes', icon: 'bi bi-people', route: 'clientes'},

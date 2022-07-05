@@ -9,8 +9,6 @@ import IconSave from "../../../static/icons/icon-save.svg";
 import Image from 'react-bootstrap/Image';
 import UserDefault from '../../../static/images/user-default.jpg';
 
-
-
 export const FormUsers = () => {
 	const [formData, setFormData] = useState({
 		'id_user': '',
@@ -26,12 +24,12 @@ export const FormUsers = () => {
 	 * TODO: Make Form Validator
 	 */
 
-	const handleSubmit = (event: {preventDefault: () => void; target: any; }) => {
+	const handleSubmit = (event) => {
 		event.preventDefault();;
-		navigate('/clientes');
+		navigate('/usuarios');
 	}
 
-	const handleChange = (event: { target: any }) => {
+	const handleChange = (event) => {
 		const { id, value } = event.target;
 		setFormData({...formData, [id]: value});
 	}

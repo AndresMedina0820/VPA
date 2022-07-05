@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { CardCustom } from '../../../styles/GlobalStyles';
-import { SearchInput } from '../components/SearchInput';
-import { ButtonNewClients } from '../components/ButtonNewClients';
+import { SearchInput } from '../../../utilities/SearchInput';
+import { ButtonNew } from '../../../utilities/ButtonNew';
 import { TableList } from '../components/TableList';
 import { useGetCustomers } from '../hooks/useGetCustomers';
 
@@ -13,9 +13,13 @@ export const Customers = () => {
 	return (
 		<Fragment>
 			<CardCustom>
-				<div className="px-3 d-flex justify-content-between">
-					<SearchInput customers={customers} setFilteredCustomers={setFilteredCustomers}/>
-					<ButtonNewClients />
+				<div className="row justify-content-center">
+					<div className="col-10">
+						<SearchInput data={customers} setFilteredData={setFilteredCustomers}/>
+					</div>
+					<div className="col-2 text-center">
+						<ButtonNew label={'Nuevo Cliente'} link={'/clientes/nuevo'}/>
+					</div>
 				</div>
 				<hr />
 				<CardCustom.Body>

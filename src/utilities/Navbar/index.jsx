@@ -1,7 +1,6 @@
-import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Image from 'react-bootstrap/Image';
-import Profile from  '../../../static/images/user-default.jpg';
+import Profile from  '../../static/images/user-default.jpg';
 import { NavbarCustom, WrapperNav } from './NavbarStyles';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 

@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { getCustomers } from '../services/customerService';
+import { getUsers } from '../services/customerService';
 
-export const useGetCustomers = () => {
-    const [customers, setCustomers] = useState([]);
+export const useGetUsers = () => {
+    const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
     useEffect(() => {
         try {
-            getCustomers()
+            getUsers()
             .then((result) => {
-                setCustomers(result.data ? result.data : []);
+                setUsers(result.data ? result.data : []);
             });
         } catch (error) {
             console.error(error);
@@ -18,6 +18,6 @@ export const useGetCustomers = () => {
     }, []);
 
     return {
-        customers
+        users
     }
 }

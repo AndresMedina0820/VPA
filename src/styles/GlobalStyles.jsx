@@ -65,6 +65,10 @@ i {
 .cursor-pointer {
 	cursor: pointer;
 }
+
+.bg-white {
+	background-color: white;
+}
 `;
 
 export const CardCustom = styled(Card) `

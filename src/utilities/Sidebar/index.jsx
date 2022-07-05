@@ -1,10 +1,9 @@
-import React from 'react';
 import { SideBar, SideBarHeader, ListModules } from './SidebarStyles';
 import { Link } from "react-router-dom";
 import Image from 'react-bootstrap/Image';
-import Logo from '../../../static/images/logo.png';
-import IconBuses from '../../../static/icons/icon-buses.svg';
-import IconTravels from '../../../static/icons/icon-travels.svg';
+import Logo from '../../static/images/logo.png';
+import IconBuses from '../../static/icons/icon-buses.svg';
+import IconTravels from '../../static/icons/icon-travels.svg';
 
 export const Sidebar = ({toggleMenu, modules}) => {
   return (
