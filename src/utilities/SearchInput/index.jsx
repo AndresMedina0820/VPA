@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { SearchInputStyle } from './SearchInputStyles';
 
-export const SearchInput = ({data, setFilteredData}) => {
+export const SearchInput = ({data, setFilteredData, mod}) => {
 	useEffect(() => {
 		setFilteredData(data);
 	}, [data, setFilteredData]);
@@ -10,7 +10,13 @@ export const SearchInput = ({data, setFilteredData}) => {
 		console.log(e)
 		e.preventDefault()
 		const value = e.target.value
-		const filter = data.filter(customer => customer.name.toLowerCase().includes(value.toLowerCase()))
+		const filter = data.filter(item => {
+			if (mod === 'buses') {
+				return item.company.name.toLowerCase().includes(value.toLowerCase())
+			} else {
+				return item.name.toLowerCase().includes(value.toLowerCase())
+			}
+		});
 		setFilteredData(filter);
 	}
 

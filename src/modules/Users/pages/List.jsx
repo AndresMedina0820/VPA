@@ -13,10 +13,10 @@ export const Users = () => {
 		<Fragment>
 			<CardCustom className="pt-4 pb-2">
 			<div className="row justify-content-center">
-					<div className="col-10">
+					<div className="col-6">
 						<SearchInput data={users} setFilteredData={setFilteredUsers}/>
 					</div>
-					<div className="col-2 text-center">
+					<div className="col text-end">
 						<ButtonNew label={'Nuevo Usuario'} link={'/usuarios/nuevo'}/>
 					</div>
 				</div>

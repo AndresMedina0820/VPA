@@ -88,3 +88,7 @@ export const Icon = styled.img `
     width: 1.1rem;
     margin: 0 .25rem;
 `
+
+export const Label = styled.label `
+	color: #5c5c5c
+`

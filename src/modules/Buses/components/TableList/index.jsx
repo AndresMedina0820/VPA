@@ -1,15 +1,16 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment } from 'react';
-import { OptionsButtons } from '../OptionsButtons';
-import { deleteCustomers } from '../../services/customerService';
-import Swal from "sweetalert2";
+import { OptionsButtons } from '../OptionsButtons/index';
+import { deleteBuses } from '../../services/busesService';
+import Swal from 'sweetalert2';
 
-export const TableList = ({customers, getCustomer}) => {
-	const openModal = (customer) => {
-		console.log("OPEN MODAL:", customer)
+export const TableList = ({buses}) => {
+
+	const openModal = (bus) => {
+		console.log("OPEN MODAL:", bus)
 		Swal.fire({
-			title: 'Eliminar Cliente',
-			text: `¿Estas seguro de eliminar a ${customer?.name}?`,
+			title: 'Eliminar Bus',
+			text: `¿Estas seguro de eliminar el bus ${bus?.company.name}(${bus?.licensePlate})?`,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#dc3545',
@@ -19,7 +20,7 @@ export const TableList = ({customers, getCustomer}) => {
 		  }).then((resp) => {
 			console.log(resp)
 			if (resp.isConfirmed) {
-				deleteCustomers(customer.id)
+				deleteBuses(bus.id)
 				.then((result) => {
 					try {
 						if (result.status === 201) {
@@ -51,33 +52,36 @@ export const TableList = ({customers, getCustomer}) => {
 	return (
 		<Fragment>
 			<div className="table-responsive">
-				<table className="table table-hover">
+				<table className="table table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>#</th>
-							<th>Identificación</th>
-							<th>Tipo de ID</th>
-							<th>Nombres</th>
-							<th>Apellidos</th>
-							<th>Correo Electronico</th>
-							<th>Celular</th>
-							<th>Ciudad</th>
+							<th>Placa</th>
+							<th>Capacidad</th>
+							<th>Empresa</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody className="align-middle">
-						{ customers.map((customer, index) => (
-							<tr key={customer.id}>
+						{ buses.map((bus, index) => (
+							<tr key={bus.id}>
 								<td>{index+1}</td>
-								<td>{customer.customerId}</td>
-								<td className="text-center">{customer.type_id.name}</td>
-								<td>{customer.name}</td>
-								<td>{customer.lastName}</td>
-								<td>{customer.email}</td>
-								<td>{customer.phone}</td>
-								<td>{customer.city}</td>
+								<td>{bus.licensePlate}</td>
+								<td>{bus.capacity}</td>
+								<td>{bus.company.name}</td>
 								<td className="text-center">
-									<OptionsButtons getCustomer={getCustomer} type={'clientes'} openModal={openModal} data={customer}/>
+									<a  type="button"
+										id="dropdownMenuButton"
+										data-bs-toggle="dropdown"
+										aria-haspopup="true"
+										aria-expanded="false"
+										className="text-decoration-none"
+									>
+										<i className="bi bi-three-dots-vertical"></i>
+									</a>
+									<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<OptionsButtons openModal={openModal} data={bus}/>
+									</div>
 								</td>
 							</tr>
 						)) }

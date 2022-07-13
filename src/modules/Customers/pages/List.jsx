@@ -8,16 +8,16 @@ import { useGetCustomers } from '../hooks/useGetCustomers';
 
 export const Customers = () => {
 	const { customers } = useGetCustomers();
-	const [filteredCustomers, setFilteredCustomers] = useState([]);
+	const [filteredCustomers, setFilteredCustomers] = useState(customers);
 
 	return (
 		<Fragment>
 			<CardCustom>
 				<div className="row justify-content-center">
-					<div className="col-10">
+					<div className="col-6">
 						<SearchInput data={customers} setFilteredData={setFilteredCustomers}/>
 					</div>
-					<div className="col-2 text-center">
+					<div className="col text-end">
 						<ButtonNew label={'Nuevo Cliente'} link={'/clientes/nuevo'}/>
 					</div>
 				</div>
@@ -26,7 +26,7 @@ export const Customers = () => {
 					<TableList customers={filteredCustomers}/>
 				</CardCustom.Body>
 			</CardCustom>
-			<p className="fw-bold">Pagina 1/20</p>
+			{/* <p className="fw-bold">Pagina 1/20</p> */}
 		</Fragment>
 	)
 }

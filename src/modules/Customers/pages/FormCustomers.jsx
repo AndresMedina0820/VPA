@@ -1,82 +1,89 @@
-import { useEffect, useState }  from "react";
-import { CardCustom, WrapperButtons, Icon } from "../../../styles/GlobalStyles";
-import Form from 'react-bootstrap/Form'
-import Button from "react-bootstrap/Button";
-import IconSave from '../../../static/icons/icon-save.svg';
+import { useEffect, useContext }  from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { CardCustom, WrapperButtons, Icon, Label } from '../../../styles/GlobalStyles';
+import IconSave from '../../../static/icons/icon-save.svg';
 import { useForm } from 'react-hook-form';
-// import { usePostCustomers } from '../hooks/usePostCustomers';
-import { createCustomers } from '../services/customerService';
+import { createCustomers, updateCustomers } from '../services/customerService';
+import { ToastContext } from '../../../contexts/ToastContext';
 import { getOneCustomers } from '../services/customerService';
 
-
-// type FormData = {
-// 	customerId: string,
-// 	typeId: string,
-// 	name: string,
-// 	lastName: string,
-// 	dateBirth: Date,
-// 	isChild: boolean,
-// 	email: string,
-// 	phone: string,
-// 	city: string,
-// 	customerType: string,
-// 	address: string
-// }
-
 export const FormCustomers = () => {
-
-	let params = useParams();
-	const [customer, setCustomer] = useState([]);
+	const { setOpenToast, setDescriptionToast, setIconToast } = useContext(ToastContext);
+	const navigate = useNavigate();
+	const { register, setValue, handleSubmit, formState: { errors } } = useForm({
+		mode: "all",
+		defaultValues: {
+			customerDetails: {
+				customerId: '',
+				typeId: '1',
+				name: '',
+				lastName: '',
+				dateBirth: '',
+				isChild: false,
+				email: '',
+				phone: '',
+				city: '',
+				customerType: '0',
+				address: ''
+			}
+		}
+	});
+	const params = useParams();
+	const paramsId = params ? parseInt(params.customer_id, 10) : '';
 
 	useEffect(() => {
-		try {
-			if (params.customer_id) {
-				console.log("ENTREEE")
-				getOneCustomers(parseInt(params.customer_id))
+        try {
+			if (paramsId) {
+				getOneCustomers(paramsId)
 				.then((result) => {
-					setCustomer(result.data ? result.data : []);
-					// if (result) {
-					// 	customer.push(result?.data)
-					// }
+					setValue('customerDetails', {...result.data});
 				});
 			}
-		} catch (error) {
-			console.error(error);
-		}
-	}, []);
-
-	console.log("customer: ",customer)
-
-	const { register, setValue, handleSubmit, formState: { errors } } = useForm({
-		defaultValues: {name: customer.name}
-	});
-	const navigate = useNavigate();
-
-	// const [formData, setFormData] = useState({
-	// 	'customerId': '',
-	// 	'typeId': '1',
-	// 	'name': '',
-	// 	'lastName': '',
-	// 	'dateBirth': '',
-	// 	'email': '',
-	// 	'phone': 0,
-	// 	'city': '',
-	// 	'address': '',
-	// });
-
-	/**
-	 * TODO: Make Form Validator
-	 */
+        } catch (error) {
+            console.error(error);
+			setDescriptionToast(error);
+			setIconToast('error');
+			setOpenToast(true);
+        }
+    }, [paramsId, setValue]);
 
 	const onSubmit = (data) => {
-		console.log("formData: ", data);
-		createCustomers(data)
-		.then((result) => {
-			console.log('result: ',result)
-		});
-		navigate('/clientes');
+		if (paramsId) {
+			updateCustomer(paramsId, data.customerDetails);
+		} else {
+			createCustomer(data.customerDetails);
+		}
 	}
+
+	const createCustomer = (data) => {
+		createCustomers(data)
+		.then(() => {
+			setDescriptionToast("¡Cliente creado correctamente!");
+			setIconToast('success');
+			setOpenToast(true);
+			navigate('/clientes');
+		})
+		.catch((error) => {
+			setDescriptionToast(error.response.data.message);
+			setIconToast('error');
+			setOpenToast(true);
+		});
+	};
+
+	const updateCustomer = (id, data) => {
+		updateCustomers(id, data)
+		.then((result) => {
+			setDescriptionToast("¡Cliente actualizado correctamente!");
+			setIconToast('success');
+			setOpenToast(true);
+			navigate('/clientes');
+		})
+		.catch((error) => {
+			setDescriptionToast(error.response.data.message);
+			setIconToast('error');
+			setOpenToast(true);
+		});
+	};
 
 	const ValidationIsChild = (event) => {
 		const date = new Date(event.target.value);
@@ -91,174 +98,160 @@ export const FormCustomers = () => {
 		}
 	}
 
-	// const handleChange = (event: { target: any }) => {
-	// 	const { id, value } = event.target;
-	// 	setFormData({...formData, [id]: value});
-	// }
-
-	// I can setvalue input with information of var formData
-	// const {
-	// 	customerId,
-	// 	typeId,
-	// 	name,
-	// 	lastName,
-	// 	dateBirth,
-	// 	email,
-	// 	phone,
-	// 	city,
-	// 	address,
-	// } = formData;
-
 	return (
-		<>
-		<Form noValidate onSubmit={handleSubmit(onSubmit)}>
+		<form noValidate onSubmit={handleSubmit(onSubmit)}>
 			<CardCustom>
 				<div className="row" style={{"paddingLeft": "6rem", "paddingRight": "6rem"}}>
 					<div className="col-md-12 mb-4">
-						<h2 className="m-0">Nuevo Cliente</h2>
+						{ 	params.customer_id ?
+								<h2 className="m-0">Editar Cliente</h2>
+							:	<h2 className="m-0">Nuevo Cliente</h2>
+						}
 						<small style={{color: "#B5B5B5"}}>Esta es la información acerca del cliente</small>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Número de identificación</Form.Label>
-							<Form.Control type="text" autoComplete='off' className={errors.customerId && "border-danger"}
-							{...register("customerId", { required: true })}/>
-							{ errors.customerId &&
+						<div className="form-floating mb-3">
+							<input type="text" autoComplete="off" placeholder="Número de identificación"
+								className={`form-control ${errors.customerDetails?.customerId && "is-invalid"}`}
+								 {...register("customerDetails.customerId", { required: true })}/>
+							<Label>Número de identificación</Label>
+							{ errors.customerDetails?.customerId &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Tipo de identificación</Form.Label>
-							<Form.Select aria-label="Type Customer" className={errors.typeId && "border-danger"}
-							{...register("customerType", { required: true })}>
+						<div className="form-floating mb-3">
+							<select aria-label="Type Customer" placeholder="Tipo de identificación"
+							className={`form-select ${errors.customerDetails?.typeId && "is-invalid"}`}
+							{...register("customerDetails.customerType", { required: true })}>
 								<option value="0">CC</option>
 								<option value="1">TI</option>
 								<option value="2">RC</option>
-							</Form.Select>
-							{ errors.customerType &&
+							</select>
+							<Label>Tipo de identificación</Label>
+							{ errors.customerDetails?.customerType &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Nombres</Form.Label>
-							<Form.Control type="text" autoComplete='off' className={errors.name && "border-danger"}
-							{...register("name", { required: true })}/>
-							{ errors.name &&
+						<div className="form-floating mb-3">
+							<input type="text" autoComplete="off" placeholder="Nombres" className={`form-control ${errors.customerDetails?.name && "is-invalid"}`}
+								{...register("customerDetails.name", { required: true })}/>
+							<Label>Nombres</Label>
+							{ errors.customerDetails?.name &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Apellidos</Form.Label>
-							<Form.Control type="text" autoComplete='off' className={errors.lastName && "border-danger"}
-							{...register("lastName", { required: true })}/>
-							{ errors.lastName &&
+						<div className="form-floating mb-3">
+							<input type="text" autoComplete="off" placeholder="Apellidos" className={`form-control ${errors.customerDetails?.lastName && "is-invalid"}`}
+							{...register("customerDetails.lastName", { required: true })}/>
+							<Label>Apellidos</Label>
+							{ errors.customerDetails?.lastName &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Fecha de Nacimiento</Form.Label>
-							<Form.Control type="date" autoComplete='off' className={errors.dateBirth && "border-danger"}
-							{...register("dateBirth", { required: true })} onChange={ValidationIsChild}/>
-							{ errors.dateBirth &&
+						<div className="form-floating mb-3">
+							<input type="date" autoComplete="off" placeholder="Fecha de Nacimiento" className={`form-control ${errors.customerDetails?.dateBirth && "is-invalid"}`}
+								{...register("customerDetails.dateBirth", { required: true })} onChange={ValidationIsChild}/>
+							<Label>Fecha de Nacimiento</Label>
+							{ errors.customerDetails?.dateBirth &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Correo Electrónico</Form.Label>
-							<Form.Control type="email" autoComplete='off' className={errors.email && "border-danger"}
-							{...register("email", { required: true })}/>
-							{ errors.email &&
+						<div className="form-floating mb-3">
+							<input type="email" autoComplete="off" placeholder="Correo Electrónico" className={`form-control ${errors.customerDetails?.email && "is-invalid"}`}
+								{...register("customerDetails.email", { required: true })}/>
+							<Label>Correo Electrónico</Label>
+							{ errors.customerDetails?.email &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Teléfono/Celular</Form.Label>
-							<Form.Control type="number" autoComplete='off' className={errors.phone && "border-danger"}
-							{...register("phone", { required: true })}/>
-							{ errors.phone &&
+						<div className="form-floating mb-3">
+							<input type="text" autoComplete="off" placeholder="Teléfono/Celular" className={`form-control ${errors.customerDetails?.phone && "is-invalid"}`}
+							{...register("customerDetails.phone", { required: true })}/>
+							<Label>Teléfono/Celular</Label>
+							{ errors.customerDetails?.phone &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Ciudad</Form.Label>
-							<Form.Control type="text" autoComplete='off' className={errors.city && "border-danger"}
-							{...register("city", { required: true })}/>
-							{ errors.city &&
+						<div className="form-floating mb-3">
+							<input type="text" autoComplete="off" placeholder="Ciudad" className={`form-control ${errors.customerDetails?.city && "is-invalid"}`}
+							{...register("customerDetails.city", { required: true })}/>
+							<Label>Ciudad</Label>
+							{ errors.customerDetails?.city &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Tipo de Cliente</Form.Label>
-							<Form.Select aria-label="Type ID" className={errors.typeId && "border-danger"}
-							{...register("typeId", { required: true })}>
+						<div className="form-floating mb-3">
+							<select aria-label="Type ID" placeholder="Tipo de Cliente" className={`form-select ${errors.customerDetails?.typeId && "is-invalid"}`}
+							{...register("customerDetails.typeId", { required: true })}>
 								<option value="0">Interno</option>
 								<option value="1">Externo</option>
-							</Form.Select>
-							{ errors.typeId &&
+							</select>
+							<Label>Tipo de Cliente</Label>
+							{ errors.customerDetails?.typeId &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 					<div className="col-md-6">
-						<Form.Group className="mb-3">
-							<Form.Label>Dirección</Form.Label>
-							<Form.Control as="textarea" rows={3} autoComplete='off' className={errors.address && "border-danger"}
-							{...register("address", { required: false })}/>
-							{ errors.address &&
+						<div className="form-floating mb-3">
+							<textarea as="textarea" rows={3} autoComplete="off" placeholder="Dirección"
+							className={`form-control ${errors.customerDetails?.address && "is-invalid"}`}
+							{...register("customerDetails.address", { required: true })}></textarea>
+							<Label>Dirección</Label>
+							{ errors.customerDetails?.address &&
 								<small className="text-danger d-block mb-2">
 									¡Campo Obligatorio!
 								</small>
 							}
-						</Form.Group>
+						</div>
 					</div>
 				</div>
 			</CardCustom>
 			<WrapperButtons>
 				<Link to={'/clientes'}>
-					<Button variant="secondary" type="button">
+					<button className="btn btn-secondary" type="button">
 						Cancelar
-					</Button>
+					</button>
 				</Link>
-				<Button variant="success" className="ms-2" type="submit">
+				<button className="btn btn-success ms-2" type="submit">
 					<Icon src={IconSave}></Icon>
 					Guardar
-				</Button>
+				</button>
 			</WrapperButtons>
-		</Form>
-		</>
+		</form>
 	)
 }

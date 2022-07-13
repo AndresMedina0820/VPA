@@ -27,12 +27,12 @@ export const FormTravels = () => {
 	 * TODO: Make Form Validator
 	 */
 
-	const handleSubmit = (event: {preventDefault: () => void; target: any; }) => {
+	const handleSubmit = (event) => {
 		event.preventDefault();;
 		navigate('/clientes');
 	}
 
-	const handleChange = (event: { target: any }) => {
+	const handleChange = (event) => {
 		const { id, value } = event.target;
 		setFormData({...formData, [id]: value});
 	}

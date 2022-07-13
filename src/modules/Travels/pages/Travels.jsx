@@ -56,7 +56,7 @@ export const Travels = () => {
 					</Table>
 				</CardCustom.Body>
 			</CardCustom>
-			<p className="fw-bold">Pagina 1/20</p>
+			{/* <p className="fw-bold">Pagina 1/20</p> */}
 			<Modal show={show} onHide={handleClose} className="text-danger">
 				<Modal.Header closeButton>
 					<Modal.Title>Eliminar Viaje</Modal.Title>
