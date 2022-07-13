@@ -2,8 +2,8 @@ import { SideBar, SideBarHeader, ListModules } from './SidebarStyles';
 import { Link } from "react-router-dom";
 import Image from 'react-bootstrap/Image';
 import Logo from '../../static/images/logo.png';
-import IconBuses from '../../static/icons/icon-buses.svg';
-import IconTravels from '../../static/icons/icon-travels.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faUserGroup, faBus, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 export const Sidebar = ({toggleMenu, modules}) => {
   return (
@@ -18,11 +18,15 @@ export const Sidebar = ({toggleMenu, modules}) => {
                         <ListModules>
                             {/* Changes for SASS with IconMoons */}
                             {
+								mod.name === 'Clientes' ?
+									<FontAwesomeIcon icon={faUser}/> :
+                                mod.name === 'Usuarios' ?
+									<FontAwesomeIcon icon={faUserGroup}/> :
                                 mod.name === 'Buses' ?
-                                <Image src={IconBuses} style={{width: "1.2rem", margin: "0 .25rem"}}></Image> :
+                                	<FontAwesomeIcon icon={faBus}/> :
                                 mod.name === 'Viajes' ?
-                                <Image src={IconTravels} style={{width: "1.2rem", margin: "0 .35rem"}}></Image> :
-                                <i className={`text-white ${mod.icon}`}></i>
+									<FontAwesomeIcon icon={faMapLocationDot}/> :
+								''
                             }
                             {toggleMenu === true && <span>{mod.name}</span>}
                         </ListModules>

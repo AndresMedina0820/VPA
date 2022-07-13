@@ -1,15 +1,18 @@
 import { useEffect, useContext }  from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { CardCustom, WrapperButtons, Icon, Label } from '../../../styles/GlobalStyles';
-import IconSave from '../../../static/icons/icon-save.svg';
+import { CardCustom, WrapperButtons, Label } from '../../../styles/GlobalStyles';
 import { useForm } from 'react-hook-form';
 import { createCustomers, updateCustomers } from '../services/customerService';
 import { ToastContext } from '../../../contexts/ToastContext';
 import { getOneCustomers } from '../services/customerService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
 export const FormCustomers = () => {
 	const { setOpenToast, setDescriptionToast, setIconToast } = useContext(ToastContext);
 	const navigate = useNavigate();
+	const today = new Date("dd/mm/yyyy");
+	console.log("today: ", today);
 	const { register, setValue, handleSubmit, formState: { errors } } = useForm({
 		mode: "all",
 		defaultValues: {
@@ -37,6 +40,7 @@ export const FormCustomers = () => {
 				getOneCustomers(paramsId)
 				.then((result) => {
 					setValue('customerDetails', {...result.data});
+					setValue('customerDetails.dateBirth', "");
 				});
 			}
         } catch (error) {
@@ -72,7 +76,7 @@ export const FormCustomers = () => {
 
 	const updateCustomer = (id, data) => {
 		updateCustomers(id, data)
-		.then((result) => {
+		.then(() => {
 			setDescriptionToast("¡Cliente actualizado correctamente!");
 			setIconToast('success');
 			setOpenToast(true);
@@ -86,15 +90,14 @@ export const FormCustomers = () => {
 	};
 
 	const ValidationIsChild = (event) => {
+		console.log("ValidationIsChild")
 		const date = new Date(event.target.value);
 		const now = new Date();
-		console.log('isChild', date.getFullYear());
 		const result = now.getFullYear() - date.getFullYear();
-		console.log('result',result);
 		if (result > 3) {
-			setValue("isChild", false);
+			setValue("customerDetails.isChild", false);
 		} else {
-			setValue("isChild", true);
+			setValue("customerDetails.isChild", true);
 		}
 	}
 
@@ -165,7 +168,9 @@ export const FormCustomers = () => {
 					</div>
 					<div className="col-md-6">
 						<div className="form-floating mb-3">
-							<input type="date" autoComplete="off" placeholder="Fecha de Nacimiento" className={`form-control ${errors.customerDetails?.dateBirth && "is-invalid"}`}
+							<input type="date" name="date" autoComplete="off" placeholder="Fecha de Nacimiento"
+								min="1900-01-01" max="2030-12-31"
+								className={`form-control ${errors.customerDetails?.dateBirth && "is-invalid"}`}
 								{...register("customerDetails.dateBirth", { required: true })} onChange={ValidationIsChild}/>
 							<Label>Fecha de Nacimiento</Label>
 							{ errors.customerDetails?.dateBirth &&
@@ -248,7 +253,7 @@ export const FormCustomers = () => {
 					</button>
 				</Link>
 				<button className="btn btn-success ms-2" type="submit">
-					<Icon src={IconSave}></Icon>
+					<FontAwesomeIcon icon={faFloppyDisk} className="me-2" />
 					Guardar
 				</button>
 			</WrapperButtons>

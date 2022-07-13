@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { Navbar } from '../utilities/Navbar';
 
 const modules = [
-		{ name: 'Clientes', icon: 'bi bi-people', route: 'clientes'},
-		{ name: 'Usuarios', icon: 'bi bi-person', route: 'usuarios'},
-		{ name: 'Buses', icon: '', route: 'buses'},
-		{ name: 'Viajes', icon: '', route: 'viajes'},
+		{ name: 'Clientes', route: 'clientes'},
+		{ name: 'Usuarios', route: 'usuarios'},
+		{ name: 'Buses', route: 'buses'},
+		{ name: 'Viajes', route: 'viajes'},
 	];
 
 export const Layout = ({ children }) => {

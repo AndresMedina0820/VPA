@@ -23,7 +23,7 @@ export const Customers = () => {
 				</div>
 				<hr />
 				<CardCustom.Body>
-					<TableList customers={filteredCustomers}/>
+					<TableList customers={filteredCustomers} setFilteredCustomers={setFilteredCustomers}/>
 				</CardCustom.Body>
 			</CardCustom>
 			{/* <p className="fw-bold">Pagina 1/20</p> */}

@@ -3,8 +3,11 @@ import { Fragment } from 'react';
 import { OptionsButtons } from '../OptionsButtons';
 import { deleteCustomers } from '../../services/customerService';
 import Swal from "sweetalert2";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCarriageBaby } from '@fortawesome/free-solid-svg-icons';
 
-export const TableList = ({customers, getCustomer}) => {
+export const TableList = ({customers}) => {
+
 	const openModal = (customer) => {
 		console.log("OPEN MODAL:", customer)
 		Swal.fire({
@@ -55,6 +58,7 @@ export const TableList = ({customers, getCustomer}) => {
 					<thead>
 						<tr>
 							<th>#</th>
+							<th></th>
 							<th>Identificación</th>
 							<th>Tipo de ID</th>
 							<th>Nombres</th>
@@ -66,21 +70,37 @@ export const TableList = ({customers, getCustomer}) => {
 						</tr>
 					</thead>
 					<tbody className="align-middle">
-						{ customers.map((customer, index) => (
-							<tr key={customer.id}>
-								<td>{index+1}</td>
-								<td>{customer.customerId}</td>
-								<td className="text-center">{customer.type_id.name}</td>
-								<td>{customer.name}</td>
-								<td>{customer.lastName}</td>
-								<td>{customer.email}</td>
-								<td>{customer.phone}</td>
-								<td>{customer.city}</td>
-								<td className="text-center">
-									<OptionsButtons getCustomer={getCustomer} type={'clientes'} openModal={openModal} data={customer}/>
+						{
+							customers.length > 0  ?
+							( customers.map((customer, index) => (
+								<tr key={customer.id}>
+									<td>{index+1}</td>
+									<td>
+										{
+											customer.isChild &&
+											<span className="badge rounded-pill text-bg-primary">
+												<FontAwesomeIcon icon={faCarriageBaby}/>
+											</span>
+										}
+									</td>
+									<td>{customer.customerId}</td>
+									<td className="text-center">{customer.type_id.name}</td>
+									<td>{customer.name}</td>
+									<td>{customer.lastName}</td>
+									<td>{customer.email}</td>
+									<td>{customer.phone}</td>
+									<td>{customer.city}</td>
+									<td className="text-center">
+										<OptionsButtons type={'clientes'} openModal={openModal} data={customer}/>
+									</td>
+								</tr>
+							)) ) :
+							<tr>
+								<td colSpan="10" className="text-center border-bottom-0">
+									<h1>¡No se encontraron clientes!</h1>
 								</td>
 							</tr>
-						)) }
+						}
 					</tbody>
 				</table>
 			</div>
